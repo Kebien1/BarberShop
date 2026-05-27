@@ -1,0 +1,135 @@
+@page "/login"
+@using BarberShop.Authentication
+@using BarberShop.Services
+@using BarberShop.Models
+@inject CustomAuthenticationStateProvider AuthStateProvider
+@inject NavigationManager Navigation
+@inject IRoleService RoleService
+
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow-lg border-0">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="mb-2">🔐 BarberShop Login</h2>
+                        <p class="text-muted">Inicia sesión con tu rol</p>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Error:</strong> @errorMessage
+                            <button type="button" class="btn-close" @onclick="ClearError"></button>
+                        </div>
+                    }
+
+                    <form @onsubmit="HandleLoginAsync">
+                        <div class="mb-3">
+                            <label class="form-label">Selecciona tu Rol</label>
+                            <select class="form-select" @bind="selectedRoleName" required>
+                                <option value="">-- Selecciona un rol --</option>
+                                @if (roles != null)
+                                {
+                                    @foreach (var role in roles)
+                                    {
+                                        <option value="@role.Name">@role.Name - @role.Description</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Contraseña</label>
+                            <div class="input-group">
+                                <input type="@(showPassword ? "text" : "password")" 
+                                       class="form-control" 
+                                       @bind="password" 
+                                       placeholder="Ingresa la contraseña"
+                                       required>
+                                <button class="btn btn-outline-secondary" 
+                                        type="button" 
+                                        @onclick="TogglePasswordVisibility">
+                                    <span class="@(showPassword ? "oi oi-eye" : "oi oi-eye-off")"></span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100 py-2" disabled="@isLoading">
+                            @if (isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                <span>Iniciando sesión...</span>
+                            }
+                            else
+                            {
+                                <span>Iniciar Sesión</span>
+                            }
+                        </button>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <div class="alert alert-info" role="alert">
+                        <h6 class="alert-heading">📋 Credenciales de Prueba:</h6>
+                        <small>
+                            <div><strong>ADMIN</strong> - Password: admin123</div>
+                            <div><strong>BARBERO</strong> - Password: barbero123</div>
+                            <div><strong>VENDEDOR</strong> - Password: vendedor123</div>
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private string selectedRoleName = string.Empty;
+    private string password = string.Empty;
+    private string errorMessage = string.Empty;
+    private bool showPassword = false;
+    private bool isLoading = false;
+    private List<Role>? roles;
+
+    protected override async Task OnInitializedAsync()
+    {
+        roles = await RoleService.GetAllRolesAsync();
+    }
+
+    private async Task HandleLoginAsync()
+    {
+        if (string.IsNullOrEmpty(selectedRoleName) || string.IsNullOrEmpty(password))
+        {
+            errorMessage = "Por favor completa todos los campos";
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = string.Empty;
+
+        try
+        {
+            await AuthStateProvider.LoginAsync(selectedRoleName, password);
+            Navigation.NavigateTo("/dashboard");
+        }
+        catch (Exception ex)
+        {
+            errorMessage = ex.Message;
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+    }
+
+    private void ClearError()
+    {
+        errorMessage = string.Empty;
+    }
+}
