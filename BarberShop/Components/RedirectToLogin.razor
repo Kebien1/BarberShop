@@ -4,6 +4,8 @@
 @code {
     protected override void OnInitialized()
     {
-        Navigation.NavigateTo("/login");
+        // Redirige automáticamente al usuario a la página de login
+        // true indica que se reemplace la entrada en el historial del navegador
+        Navigation.NavigateTo("/login", true);
     }
 }

@@ -1,89 +1,119 @@
 @page "/dashboard"
 @using Microsoft.AspNetCore.Components.Authorization
-@using System.Security.Claims
-@inject AuthenticationStateProvider AuthenticationStateProvider
-@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.Authorization
 
-<div class="container-fluid mt-5">
-    <div class="row">
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1>Dashboard</h1>
-                <button class="btn btn-danger" @onclick="LogoutAsync">Cerrar Sesión</button>
+@* CORRECCIÓN: Esta línea es indispensable para que funcione el atributo [Authorize] *@
+@attribute [Authorize]
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10 col-lg-8">
+
+            <div class="card shadow-lg border-0 rounded-3">
+
+                <div class="card-header bg-dark text-white p-4">
+                    <div class="d-flex justify-content-between align-items-center flex-wrap">
+                        <div>
+                            <h2 class="mb-1">💈 BarberShop Dashboard</h2>
+                            <p class="mb-0 text-muted">Panel de control y gestión interna</p>
+                        </div>
+
+                        @* El AuthorizeView nos permite acceder de manera segura a los datos del usuario actual *@
+                        <AuthorizeView>
+                            <Authorized>
+                                <span class="badge bg-primary fs-6 px-3 py-2 mt-2 mt-sm-0">
+                                    🔑 Rol: @context.User.Identity?.Name
+                                </span>
+                            </Authorized>
+                        </AuthorizeView>
+                    </div>
+                </div>
+
+                <div class="card-body p-4 p-sm-5">
+                    <AuthorizeView>
+                        <Authorized>
+
+                            <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
+                                <span class="fs-4 me-3">🎉</span>
+                                <div>
+                                    <strong>¡Inicio de sesión correcto!</strong> Bienvenido de vuelta al sistema.
+                                </div>
+                            </div>
+
+                            <div class="mb-5">
+                                <h4 class="text-secondary mb-3">📋 Información de la Sesión</h4>
+                                <div class="p-3 bg-light rounded-3 border">
+                                    <div class="row g-2">
+                                        <div class="col-sm-4 text-muted"><strong>Rol Identificado:</strong></div>
+                                        <div class="col-sm-8 text-dark">@context.User.Identity?.Name</div>
+
+                                        <div class="col-sm-4 text-muted"><strong>Permisos/Descripción:</strong></div>
+                                        <div class="col-sm-8 text-dark">@context.User.FindFirst("Description")?.Value</div>
+
+                                        <div class="col-sm-4 text-muted"><strong>Conectado desde:</strong></div>
+                                        <div class="col-sm-8 text-dark text-monospace">@context.User.FindFirst("LoginTime")?.Value</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="text-secondary mb-3">🛠️ Acciones de tu Rol</h4>
+
+                                @* Bloque exclusivo para el Administrador *@
+                                <AuthorizeView Roles="ADMIN" Context="adminContext">
+                                    <div class="card border-danger bg-light mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-danger">🛡️ Panel de Control Total</h5>
+                                            <p class="card-text">Tienes acceso de nivel de administrador. Puedes modificar roles, dar de alta barberos y auditar las ganancias del negocio.</p>
+                                            <button class="btn btn-danger btn-sm">Gestionar Empleados</button>
+                                            <button class="btn btn-outline-danger btn-sm ms-2">Ver Reportes Globales</button>
+                                        </div>
+                                    </div>
+                                </AuthorizeView>
+
+                                @* Bloque exclusivo para el Barbero *@
+                                <AuthorizeView Roles="BARBERO" Context="barberoContext">
+                                    <div class="card border-primary bg-light mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-primary">✂️ Espacio de Trabajo del Barbero</h5>
+                                            <p class="card-text">Aquí puedes visualizar tu listado de citas programadas para el día de hoy, gestionar tus tiempos y confirmar servicios realizados.</p>
+                                            <button class="btn btn-primary btn-sm">Ver Mi Agenda</button>
+                                        </div>
+                                    </div>
+                                </AuthorizeView>
+
+                                @* Bloque exclusivo para el Vendedor *@
+                                <AuthorizeView Roles="VENDEDOR" Context="vendedorContext">
+                                    <div class="card border-success bg-light mb-3">
+                                        <div class="card-body">
+                                            <h5 class="card-title text-success">💰 Terminal de Ventas y Caja</h5>
+                                            <p class="card-text">Usa este módulo para realizar el cobro de cortes de cabello, registrar la venta de productos (ceras, champús) y agendar nuevos clientes.</p>
+                                            <button class="btn btn-success btn-sm">Registrar Nueva Venta</button>
+                                            <button class="btn btn-outline-success btn-sm ms-2">Agendar Cita</button>
+                                        </div>
+                                    </div>
+                                </AuthorizeView>
+
+                            </div>
+
+                        </Authorized>
+
+                        <NotAuthorized>
+                            @* En caso de que falle la validación por alguna razón, se muestra este mensaje de seguridad *@
+                            <div class="alert alert-danger" role="alert">
+                                🔒 No tienes autorización para ver este contenido. Por favor, regresa al Login.
+                            </div>
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </div>
+
             </div>
+
         </div>
     </div>
-
-    <AuthorizeView Context="authContext">
-        <Authorized>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="card mb-4">
-                        <div class="card-header bg-success text-white">
-                            <h5 class="mb-0">Información de Sesión</h5>
-                        </div>
-                        <div class="card-body">
-                            <p><strong>Rol:</strong> <span class="badge bg-success">@authContext.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</span></p>
-                            <p><strong>ID Rol:</strong> @authContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value</p>
-                            <p><strong>Descripción:</strong> @authContext.User.FindFirst("Description")?.Value</p>
-                            <p><strong>Conectado desde:</strong> @authContext.User.FindFirst("LoginTime")?.Value</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-8">
-                    <div class="card mb-4">
-                        <div class="card-header bg-primary text-white">
-                            <h5 class="mb-0">Panel de Control</h5>
-                        </div>
-                        <div class="card-body">
-                            <AuthorizeView Roles="ADMIN" Context="adminContext">
-                                <Authorized>
-                                    <div class="alert alert-warning">
-                                        <h6>Acceso Administrativo</h6>
-                                        <p>Tienes acceso a todas las funciones del sistema.</p>
-                                        <a href="/roles" class="btn btn-primary">Gestionar Roles</a>
-                                    </div>
-                                </Authorized>
-                            </AuthorizeView>
-
-                            <AuthorizeView Roles="BARBERO" Context="barberoContext">
-                                <Authorized>
-                                    <div class="alert alert-info">
-                                        <h6>Panel de Barbero</h6>
-                                        <p>Acceso a funciones de citas y servicios de barbería.</p>
-                                        <button class="btn btn-primary disabled">Citas (Próximamente)</button>
-                                    </div>
-                                </Authorized>
-                            </AuthorizeView>
-
-                            <AuthorizeView Roles="VENDEDOR" Context="vendedorContext">
-                                <Authorized>
-                                    <div class="alert alert-success">
-                                        <h6>Panel de Ventas</h6>
-                                        <p>Acceso a funciones de ventas y productos.</p>
-                                        <button class="btn btn-primary disabled">Ventas (Próximamente)</button>
-                                    </div>
-                                </Authorized>
-                            </AuthorizeView>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </Authorized>
-        <NotAuthorized>
-            <div class="alert alert-danger">
-                No estás autenticado. <a href="/login">Inicia sesión aquí</a>
-            </div>
-        </NotAuthorized>
-    </AuthorizeView>
 </div>
 
 @code {
-    private async Task LogoutAsync()
-    {
-        var authStateProvider = (Authentication.CustomAuthenticationStateProvider)AuthenticationStateProvider;
-        await authStateProvider.LogoutAsync();
-        Navigation.NavigateTo("/login");
-    }
+    // Por ahora este componente es meramente visual y declarativo.
+    // Maneja toda su lógica a través de los Claims proveídos por el AuthenticationState.
 }
