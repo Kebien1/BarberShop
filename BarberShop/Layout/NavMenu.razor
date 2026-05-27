@@ -1,56 +1,37 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">BarberShop</a>
-        <AuthorizeView Context="authContext">
-            <Authorized>
-                <div class="text-light me-3">
-                    <small>Bienvenido: <strong>@authContext.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</strong></small>
-                </div>
-            </Authorized>
-        </AuthorizeView>
+        <a class="navbar-brand" href="">💈 BarberShop</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
     </div>
 </div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        <AuthorizeView>
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="dashboard" Match="NavLinkMatch.All">
-                        <span class="oi oi-home" aria-hidden="true"></span> Dashboard
-                    </NavLink>
-                </div>
-                <AuthorizeView Roles="ADMIN" Context="adminContext">
-                    <Authorized>
-                        <div class="nav-item px-3">
-                            <NavLink class="nav-link" href="roles">
-                                <span class="bi bi-shield-check" aria-hidden="true"></span> Gestionar Roles
-                            </NavLink>
-                        </div>
-                    </Authorized>
-                </AuthorizeView>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="counter">
-                        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-                    </NavLink>
-                </div>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="weather">
-                        <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-                    </NavLink>
-                </div>
-            </Authorized>
-            <NotAuthorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="login">
-                        <span class="oi oi-account-login" aria-hidden="true"></span> Iniciar Sesión
-                    </NavLink>
-                </div>
-            </NotAuthorized>
-        </AuthorizeView>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Inicio
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="login">
+                <span class="oi oi-account-login" aria-hidden="true"></span> Login
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="dashboard">
+                <span class="oi oi-dashboard" aria-hidden="true"></span> Dashboard
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="roles">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> CRUD Roles
+            </NavLink>
+        </div>
     </nav>
 </div>
 
