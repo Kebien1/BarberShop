@@ -1,10 +1,12 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿<div class="top-row ps-3 navbar navbar-dark bg-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">BarberShop</a>
+        <button class="btn btn-link navbar-brand p-0" @onclick="GoToLogin" style="text-decoration: none; color: white;">
+            BarberShop
+        </button>
         <AuthorizeView Context="authContext">
             <Authorized>
                 <div class="text-light me-3">
-                    <small>Usuario: <strong>@authContext.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</strong></small>
+                    <small>@authContext.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</small>
                 </div>
             </Authorized>
         </AuthorizeView>
@@ -19,21 +21,13 @@
         <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/roles" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link" href="/roles">
                         Gestionar Roles
                     </NavLink>
                 </div>
-                <AuthorizeView Roles="ADMIN" Context="adminContext">
-                    <Authorized>
-                        <div class="nav-item px-3">
-                            <NavLink class="nav-link" href="/roles">
-                                Administrar
-                            </NavLink>
-                        </div>
-                    </Authorized>
-                </AuthorizeView>
+                <hr class="my-2" />
                 <div class="nav-item px-3">
-                    <button class="btn btn-link nav-link" style="text-align: left;" @onclick="LogoutAsync">
+                    <button class="btn btn-link nav-link text-danger p-0" style="text-align: left;" @onclick="LogoutAsync">
                         Cerrar Sesion
                     </button>
                 </div>
@@ -56,6 +50,11 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void GoToLogin()
+    {
+        Navigation.NavigateTo("/");
     }
 
     private async Task LogoutAsync()

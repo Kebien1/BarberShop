@@ -15,21 +15,6 @@
                 </div>
             </div>
 
-            <div class="row mb-4">
-                <div class="col-md-4">
-                    <div class="card border-secondary">
-                        <div class="card-header bg-secondary text-white">
-                            <h6 class="mb-0">Tu Sesion</h6>
-                        </div>
-                        <div class="card-body">
-                            <p class="mb-2"><strong>Rol:</strong> @rolesContext.User.FindFirst(System.Security.Claims.ClaimTypes.Name)?.Value</p>
-                            <p class="mb-2"><strong>ID:</strong> @rolesContext.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value</p>
-                            <p class="mb-0"><strong>Descripcion:</strong> @rolesContext.User.FindFirst("Description")?.Value</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="row">
                 <div class="col-12">
                     @if (showForm)
