@@ -5,11 +5,18 @@
 <CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
-                <NotAuthorized>
-                    <RedirectToLogin />
-                </NotAuthorized>
-            </AuthorizeRouteView>
+            @if (IsPublicRoute(routeData.PageType.FullName))
+            {
+                <RouteView RouteData="@routeData" DefaultLayout="@typeof(LoginLayout)" />
+            }
+            else
+            {
+                <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                    <NotAuthorized>
+                        <RedirectToLogin />
+                    </NotAuthorized>
+                </AuthorizeRouteView>
+            }
             <FocusOnNavigate RouteData="@routeData" Selector="h1" />
         </Found>
         <NotFound>
@@ -20,3 +27,11 @@
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
+
+@code {
+    private bool IsPublicRoute(string? routeName)
+    {
+        return routeName?.Contains("Login") == true;
+    }
+}
+

@@ -1,7 +1,31 @@
-﻿@page "/"
+﻿@page "/home"
 
-<PageTitle>Home</PageTitle>
+<AuthorizeView>
+    <Authorized>
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-12">
+                    <h1>Bienvenido a BarberShop</h1>
+                    <p class="lead">Sistema de gestion de roles para barberia</p>
+                </div>
+            </div>
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Gestionar Roles</h5>
+                            <p class="card-text">Accede al sistema de administracion de roles.</p>
+                            <a href="/roles" class="btn btn-primary">Ir a Roles</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="alert alert-warning mt-5">
+            Por favor inicia sesion para continuar.
+        </div>
+    </NotAuthorized>
+</AuthorizeView>

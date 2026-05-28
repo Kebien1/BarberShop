@@ -1,7 +1,9 @@
+@page "/"
 @page "/login"
 @using BarberShop.Authentication
 @using BarberShop.Services
 @using BarberShop.Models
+@layout LoginLayout
 @inject CustomAuthenticationStateProvider AuthStateProvider
 @inject NavigationManager Navigation
 @inject IRoleService RoleService
@@ -12,7 +14,7 @@
             <div class="card shadow-lg border-0">
                 <div class="card-body p-5">
                     <div class="text-center mb-4">
-                        <h2 class="mb-2">🔐 BarberShop Login</h2>
+                        <h2 class="mb-2">BarberShop Login</h2>
                         <p class="text-muted">Ingresa las credenciales de tu Rol</p>
                     </div>
 
@@ -66,7 +68,7 @@
                     <hr class="my-4">
 
                     <div class="alert alert-info" role="alert">
-                        <h6 class="alert-heading">📋 Credenciales por Defecto:</h6>
+                        <h6 class="alert-heading">Credenciales por Defecto:</h6>
                         <small>
                             <div><strong>ADMIN</strong> - Password: admin123</div>
                             <div><strong>BARBERO</strong> - Password: barbero123</div>
@@ -105,7 +107,7 @@
         try
         {
             await AuthStateProvider.LoginAsync(selectedRoleName, password);
-            Navigation.NavigateTo("/dashboard");
+            Navigation.NavigateTo("/roles"); // Redirige directamente al CRUD
         }
         catch (Exception ex)
         {
