@@ -25,26 +25,29 @@ namespace BarberShop.Services
         {
             _roles = new List<Role>
             {
-                new Role 
-                { 
-                    Id = _nextId++, 
-                    Name = "ADMIN", 
+                new Role
+                {
+                    Id = _nextId++,
+                    Name = "ADMIN",
+                    WorkerName = "Juan Administrador", // Nuevo campo
                     Description = "Administrador del sistema con acceso total",
                     Password = "admin123",
                     CreatedAt = DateTime.Now
                 },
-                new Role 
-                { 
-                    Id = _nextId++, 
-                    Name = "BARBERO", 
+                new Role
+                {
+                    Id = _nextId++,
+                    Name = "BARBERO",
+                    WorkerName = "Carlos Barbero", // Nuevo campo
                     Description = "Personal de barbería que realiza servicios",
                     Password = "barbero123",
                     CreatedAt = DateTime.Now
                 },
-                new Role 
-                { 
-                    Id = _nextId++, 
-                    Name = "VENDEDOR", 
+                new Role
+                {
+                    Id = _nextId++,
+                    Name = "VENDEDOR",
+                    WorkerName = "Ana Ventas", // Nuevo campo
                     Description = "Personal de ventas y atención al cliente",
                     Password = "vendedor123",
                     CreatedAt = DateTime.Now
@@ -75,8 +78,11 @@ namespace BarberShop.Services
             var existingRole = _roles.FirstOrDefault(r => r.Id == role.Id);
             if (existingRole != null)
             {
+                // Actualizamos todos los campos, incluyendo el nuevo
                 existingRole.Name = role.Name;
+                existingRole.WorkerName = role.WorkerName;
                 existingRole.Description = role.Description;
+                existingRole.Password = role.Password;
             }
             return Task.FromResult(role);
         }

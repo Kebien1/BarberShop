@@ -11,7 +11,7 @@
         <div class="container-fluid mt-4">
             <div class="row">
                 <div class="col-12">
-                    <h1 class="mb-4">Gestión de Roles</h1>
+                    <h1 class="mb-4">Gestión de Roles y Trabajadores</h1>
                 </div>
             </div>
 
@@ -21,27 +21,33 @@
                     {
                         <div class="card mb-4">
                             <div class="card-header bg-primary text-white">
-                                <h5 class="mb-0">@(isEditing ? "Editar Rol" : "Crear Nuevo Rol")</h5>
+                                <h5 class="mb-0">@(isEditing ? "Editar Registro" : "Crear Nuevo Registro")</h5>
                             </div>
                             <div class="card-body">
                                 <form>
                                     <div class="mb-3">
-                                        <label class="form-label">Nombre del Rol</label>
-                                        <input type="text" class="form-control" @bind="currentRole.Name" placeholder="Ej: ADMIN">
+                                        <label class="form-label">Rol</label>
+                                        <input type="text" class="form-control" @bind="currentRole.Name" placeholder="Ej: ADMIN, BARBERO...">
                                     </div>
+
                                     <div class="mb-3">
-                                        <label class="form-label">Descripcion</label>
+                                        <label class="form-label">Nombre del Trabajador</label>
+                                        <input type="text" class="form-control" @bind="currentRole.WorkerName" placeholder="Ej: Juan Pérez">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Descripción</label>
                                         <textarea class="form-control" @bind="currentRole.Description" rows="3" placeholder="Describa el rol..."></textarea>
                                     </div>
                                     <div class="mb-3">
                                         <label class="form-label">Contraseña</label>
                                         <div class="input-group">
-                                            <input type="@(showPassword ? "text" : "password")" 
-                                                   class="form-control" 
-                                                   @bind="currentRole.Password" 
+                                            <input type="@(showPassword ? "text" : "password")"
+                                                   class="form-control"
+                                                   @bind="currentRole.Password"
                                                    placeholder="Ingresa una contraseña segura">
-                                            <button class="btn btn-outline-secondary" 
-                                                    type="button" 
+                                            <button class="btn btn-outline-secondary"
+                                                    type="button"
                                                     @onclick="TogglePasswordVisibility">
                                                 <span class="@(showPassword ? "oi oi-eye" : "oi oi-eye-off")"></span>
                                             </button>
@@ -60,7 +66,7 @@
                     else
                     {
                         <button class="btn btn-primary mb-4" @onclick="ShowCreateForm">
-                            Crear Nuevo Rol
+                            Crear Nuevo Registro
                         </button>
                     }
                 </div>
@@ -83,10 +89,11 @@
                                 <thead class="table-dark">
                                     <tr>
                                         <th>ID</th>
-                                        <th>Nombre</th>
-                                        <th>Descripcion</th>
+                                        <th>Rol</th>
+                                        <th>Nombre del Trabajador</th>
+                                        <th>Descripción</th>
                                         <th>Contraseña</th>
-                                        <th>Fecha de Creacion</th>
+                                        <th>Fecha de Creación</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
@@ -96,6 +103,7 @@
                                         <tr>
                                             <td>@role.Id</td>
                                             <td><span class="badge bg-info">@role.Name</span></td>
+                                            <td>@role.WorkerName</td>
                                             <td>@role.Description</td>
                                             <td>
                                                 <span class="text-muted">
@@ -170,10 +178,11 @@
 
     private async Task EditRoleAsync(Role role)
     {
-        currentRole = new Role 
-        { 
-            Id = role.Id, 
-            Name = role.Name, 
+        currentRole = new Role
+        {
+            Id = role.Id,
+            Name = role.Name,
+            WorkerName = role.WorkerName, // Agregado para que se cargue al editar
             Description = role.Description,
             Password = role.Password,
             CreatedAt = role.CreatedAt
@@ -188,6 +197,12 @@
         {
             return;
         }
+
+        // Opcional: Descomenta esto si quieres que el nombre del trabajador sea obligatorio
+        // if (string.IsNullOrWhiteSpace(currentRole.WorkerName))
+        // {
+        //     return;
+        // }
 
         if (string.IsNullOrWhiteSpace(currentRole.Password))
         {
