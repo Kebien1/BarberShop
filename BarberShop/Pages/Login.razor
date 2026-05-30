@@ -10,70 +10,93 @@
 
 <div class="container">
     <div class="row justify-content-center align-items-center" style="min-height: 100vh;">
-        <div class="col-md-6 col-lg-5">
-            <div class="card shadow-lg border-0">
+        <div class="col-md-5">
+            <div class="card border-0 shadow" style="border-radius: 12px;">
                 <div class="card-body p-5">
-                    <div class="text-center mb-4">
-                        <h2 class="mb-2">BarberShop Login</h2>
-                        <p class="text-muted">Ingresa las credenciales de tu Rol</p>
+                    <div class="text-center mb-5">
+                        <h2 class="fw-bold mb-2">Login BarberShop</h2>
+                        <p class="text-muted" style="font-size: 14px;">Accede a tu cuenta</p>
                     </div>
 
                     @if (!string.IsNullOrEmpty(errorMessage))
                     {
                         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>Error:</strong> @errorMessage
+                            @errorMessage
                             <button type="button" class="btn-close" @onclick="ClearError"></button>
                         </div>
                     }
 
                     <form @onsubmit="HandleLoginAsync">
-                        <div class="mb-3">
-                            <label class="form-label">Nombre del Rol</label>
-                            <input type="text"
-                                   class="form-control"
-                                   @bind="selectedRoleName"
-                                   placeholder="Ej: ADMIN, BARBERO, VENDEDOR"
-                                   required />
+                        <div class="mb-4">
+                            <label class="form-label fw-bold" style="font-size: 13px;">Nombre de usuario</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0" style="border-color: #e0e0e0;">
+                                    <span class="material-symbols-outlined" style="font-size: 20px; color: #525f71;">person</span>
+                                </span>
+                                <input type="text"
+                                       class="form-control border-start-0"
+                                       @bind="selectedRoleName"
+                                       placeholder="tu_usuario"
+                                       style="border-color: #e0e0e0; font-size: 14px;"
+                                       required />
+                            </div>
                         </div>
 
                         <div class="mb-4">
-                            <label class="form-label">Contraseña</label>
+                            <label class="form-label fw-bold" style="font-size: 13px;">Contraseña</label>
                             <div class="input-group">
+                                <span class="input-group-text bg-white border-end-0" style="border-color: #e0e0e0;">
+                                    <span class="material-symbols-outlined" style="font-size: 20px; color: #525f71;">lock</span>
+                                </span>
                                 <input type="@(showPassword ? "text" : "password")"
-                                       class="form-control"
+                                       class="form-control border-start-0 border-end-0"
                                        @bind="password"
-                                       placeholder="Ingresa la contraseña"
+                                       placeholder="•••••••••"
+                                       style="border-color: #e0e0e0; font-size: 14px;"
                                        required />
-                                <button class="btn btn-outline-secondary"
+                                <button class="btn btn-outline-secondary border-start-0"
                                         type="button"
+                                        style="border-color: #e0e0e0; background-color: white;"
                                         @onclick="TogglePasswordVisibility">
-                                    <span class="@(showPassword ? "oi oi-eye" : "oi oi-eye-off")"></span>
+                                    <span class="material-symbols-outlined" style="font-size: 20px; color: #525f71;">@(showPassword ? "visibility_off" : "visibility")</span>
                                 </button>
                             </div>
                         </div>
 
-                        <button type="submit" class="btn btn-primary w-100 py-2" disabled="@isLoading">
+                        <button type="submit"
+                                class="btn w-100 py-2 fw-bold"
+                                style="background-color: #1a5f3f; color: white; border: none; border-radius: 6px; font-size: 15px;"
+                                disabled="@isLoading">
                             @if (isLoading)
                             {
-                                <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
-                                <span>Iniciando sesión...</span>
+                                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                <span>Ingresando...</span>
                             }
                             else
                             {
-                                <span>Iniciar Sesión</span>
+                                <span>Entrar</span>
                             }
                         </button>
                     </form>
 
-                    <hr class="my-4">
-
-                    <div class="alert alert-info" role="alert">
-                        <h6 class="alert-heading">Credenciales por Defecto:</h6>
-                        <small>
-                            <div><strong>ADMIN</strong> - Password: admin123</div>
-                            <div><strong>BARBERO</strong> - Password: barbero123</div>
-                            <div><strong>VENDEDOR</strong> - Password: vendedor123</div>
-                        </small>
+                    <div class="mt-4 pt-3 border-top">
+                        <p class="text-center text-muted" style="font-size: 12px;">Credenciales de prueba:</p>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <small class="text-muted d-block">ADMIN</small>
+                                <small style="color: #1a5f3f;">admin123</small>
+                            </div>
+                            <div class="col-6">
+                                <small class="text-muted d-block">BARBERO</small>
+                                <small style="color: #1a5f3f;">barbero123</small>
+                            </div>
+                        </div>
+                        <div class="row g-2 mt-2">
+                            <div class="col-6">
+                                <small class="text-muted d-block">VENDEDOR</small>
+                                <small style="color: #1a5f3f;">vendedor123</small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
